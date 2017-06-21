@@ -39,3 +39,9 @@ class SimpleTemplateTagger:
                 return self.selector.select(candidates)
 
         return None
+    
+    def add_a_template(self, a_template):
+        if type(a_template) != tuple:
+            a_template = tuple(a_template)
+        if (a_template in self.templates) == False:
+            self.templates.append(a_template)
