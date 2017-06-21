@@ -1,9 +1,9 @@
 from konlpy.tag import Twitter as KoNLPyTwitter
-from customized_konlpy.custom_tag import SimpleTemplateTagger
-from customized_konlpy.data.tagset import twitter as tagset
-from customized_konlpy.dictionary import CustomizedDictionary
-from customized_konlpy.utils import installpath
-from customized_konlpy.utils import loadtxt
+from ckonlpy.custom_tag import SimpleTemplateTagger
+from ckonlpy.data.tagset import twitter as tagset
+from ckonlpy.dictionary import CustomizedDictionary
+from ckonlpy.utils import installpath
+from ckonlpy.utils import loadtxt
 
 
 class Twitter:
