@@ -55,6 +55,12 @@ ckonlpy.tag의 Twitter는 add_dictionary를 통하여 str 혹은 list of str 형
 
     twitter._customized_tagger.add_a_template(('Noun', 'Noun', 'Josa'))
 
+## Install
+
+    $ git clone https://github.com/lovit/customized_konlpy.git
+    
+    $ pip install customized_konlpy
+
 ## Requires
 
 - JPype >= 0.6.1
