@@ -12,11 +12,31 @@ customized_KoNLPy는 확실히 알고 있는 단어들에 대해서는 라이브
 
 ## Usage
 
+### Part of speech tagging
+
+KoNLPy와 동일하게 Twitter.pos(phrase)를 입력합니다. 각 어절별로 사용자 사전에 알려진 단어가 인식되면 customized_tagger로 어절을 분리하며, 사용자 사전에 알려지지 않은 단어로 구성된 어절은 트위터 형태소 분석기로 처리합니다. 
+
+    twitter.pos('우리아이오아이는 이뻐요')
+
+    > [('우리', 'Noun'), ('아이오', 'Noun'), ('아이', 'Noun'), ('는', 'Josa'), ('이뻐', 'Adjective'), ('요', 'Eomi')] 
+
+'아이오아이'가 알려진 단어가 아니었기 때문에 트위터 분석기에서 단어를 제대로 인식하지 못합니다. 아래의 사용자 사전으로 단어 추가를 한 뒤 동일한 작업을 수행하면 아래와 같은 결과를 얻을 수 있습니다. 
+
+    twitter.pos('우리아이오아이는 이뻐요')
+    
+    > [('우리', 'Modifier'), ('아이오아이', 'Noun'), ('는', 'Josa'), ('이뻐', 'Adjective'), ('요', 'Eomi')]
+
+
+    twitter.pos('트와이스tt는 좋아요')
+
+    > [('트와이스', 'Noun'), ('tt', 'Alpha'), ('는', 'Verb'), ('좋', 'Adjective'), ('아요', 'Eomi')]
+
 ### Add words to dictioanry
 
 ckonlpy.tag의 Twitter는 add_dictionary를 통하여 str 혹은 list of str 형식의 사용자 사전을 추가할 수 있습니다. 
 
     from ckonlpy.tag import Twitter
+
     twitter.add_dictionary('아이오아이', 'Noun')
     twitter.add_dictionary(['트와이스', 'tt'], 'Noun')
 
