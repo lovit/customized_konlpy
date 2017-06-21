@@ -29,7 +29,7 @@ KoNLPy와 동일하게 Twitter.pos(phrase)를 입력합니다. 각 어절별로 
 
     twitter.pos('트와이스tt는 좋아요')
 
-    > [('트와이스', 'Noun'), ('tt', 'Alpha'), ('는', 'Verb'), ('좋', 'Adjective'), ('아요', 'Eomi')]
+    > [('트와이스', 'Noun'), ('tt', 'Noun'), ('는', 'Josa'), ('좋', 'Adjective'), ('아요', 'Eomi')]
 
 ### Add words to dictioanry
 
