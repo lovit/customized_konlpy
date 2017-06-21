@@ -32,7 +32,7 @@ class SimpleTemplateTagger:
                 candidates = candidates_
                 if not candidates:
                     break
-
+            
             # Select best one
             candidates = [[tagged[:2] for tagged in c] for c in candidates if c[-1][2] == n]
             if candidates:
