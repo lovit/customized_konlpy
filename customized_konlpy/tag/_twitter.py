@@ -50,8 +50,8 @@ class Twitter:
         # TODO
         return self._base.phrases(phrase)
     
-    def add_dictionary(self, words, tag):
-        if not (tag in self.tagset):
+    def add_dictionary(self, words, tag, force=False):
+        if (not force) and (not (tag in self.tagset)):
             raise ValueError('%s is not available tag' % tag)
         self._dictionary.add_dictionary(words, tag)
     
@@ -59,6 +59,7 @@ class Twitter:
         if not (tag in self.tagset):
             raise ValueError('%s is not available tag' % tag)
         self._dictionary.load_dictionary(fname_list, tag)
+
 
 class TwitterSelector:
     def __init__(self):
