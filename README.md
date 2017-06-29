@@ -55,6 +55,30 @@ ckonlpy.tag의 Twitter는 add_dictionary를 통하여 str 혹은 list of str 형
 
     twitter._customized_tagger.add_a_template(('Noun', 'Noun', 'Josa'))
 
+### Set templates tagger selector
+
+Templates를 이용하여도 후보가 여러 개 나올 수 있습니다. 여러 개 후보 중에서 best 를 선택하는 함수를 직접 디자인 할 수 도 있습니다. 이처럼 몇 개의 점수 기준을 만들고, 각 기준의 weight를 부여하는 방식은 트위터 분석기에서 이용하는 방식인데, 직관적이고 튜닝 가능해서 매우 좋은 방식이라 생각합니다.
+
+    score_weights = {
+        'num_nouns': -0.1,
+        'num_words': -0.2,
+        'no_noun': -1
+    }
+
+    def my_score(candidate):
+        num_nouns = len([w for w,t in candidate if t == 'Noun'])
+        num_words = len(candidate)
+        no_noun = 1 if num_nouns == 0 else 0
+
+        score = (num_nouns * score_weights['num_nouns'] 
+                 + num_words * score_weights['num_words']
+                 + no_noun * score_weights['no_noun'])
+        return score
+
+위의 예제처럼 score_weights와 my_score 함수를 정의하여 twitter.set_selector()에 입력하면, 해당 함수 기준으로 best candidate를 선택합니다. 
+
+    twitter.set_selector(score_weights, my_score)
+
 ## Install
 
     $ git clone https://github.com/lovit/customized_konlpy.git
