@@ -4,11 +4,12 @@ from ckonlpy.custom_tag import SimpleSelector
 from ckonlpy.data.tagset import twitter as tagset
 from ckonlpy.dictionary import CustomizedDictionary
 from ckonlpy.utils import installpath
+from ckonlpy.utils import load_dictionary
 from ckonlpy.utils import loadtxt
 
 
 class Twitter:
-    def __init__(self, load_default_dictionary=False):
+    def __init__(self, load_default_dictionary=True):
         self._base = KoNLPyTwitter()
         self._dictionary = CustomizedDictionary()
         if load_default_dictionary:
@@ -23,10 +24,11 @@ class Twitter:
         return SimpleTemplateTagger(templates, self._dictionary, SimpleSelector())
     
     def _load_default_dictionary(self):
-        josapath = '%s/data/twitter/josa.txt' % installpath
-        modifierpath = '%s/data/twitter/modifier.txt' % installpath
-        self._dictionary.add_dictionary(loadtxt(josapath), 'Josa')
-        self._dictionary.add_dictionary(loadtxt(modifierpath), 'Modifier')
+        directory = '%s/data/twitter/' % installpath
+        self._dictionary.add_dictionary(load_dictionary('%s/josa' % directory), 'Josa')
+        self._dictionary.add_dictionary(load_dictionary('%s/noun' % directory, ignore_a_syllable=True), 'Noun')
+        self._dictionary.add_dictionary(load_dictionary('%s/adverb' % directory), 'Adverb')
+        #self._dictionary.add_dictionary(load_dictionary(modifier_dir), 'Modifier')
         
     def pos(self, phrase):
         eojeols = phrase.split()
