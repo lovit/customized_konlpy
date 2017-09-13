@@ -7,7 +7,8 @@ class SimpleTemplateTagger:
 
     def pos(self, eojeol):
         """eojeol: str"""
-
+        
+        best_candidates = []
         for template in self.templates:
             n = len(eojeol)
             
@@ -36,8 +37,11 @@ class SimpleTemplateTagger:
             # Select best one
             candidates = [[tagged[:2] for tagged in c] for c in candidates if c[-1][2] == n]
             if candidates:
-                return self.selector.select(candidates)
-
+                best_candidates += candidates
+        
+        if best_candidates:
+            return self.selector.select(best_candidates)
+        
         return None
     
     def add_a_template(self, a_template):
