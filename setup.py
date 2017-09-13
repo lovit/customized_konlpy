@@ -13,5 +13,5 @@ setup(
    install_requires=["Jpype1>=0.6.1", "konlpy>=0.4.4"],
    keywords = ['KoNLPy wrapping customization'],
    packages=find_packages(),
-   package_data={'ckonlpy':['data/*/*']}
+   package_data={'ckonlpy':['data/*/*.txt', 'data/*/*/*.txt']}
 )
