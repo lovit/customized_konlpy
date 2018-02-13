@@ -44,7 +44,7 @@ class Twitter:
     
     def nouns(self, phrase):
         tagged = self.pos(phrase)
-        return [w for w, t in tagged if t[0] == 'N']
+        return [w for w, t in tagged if t == 'Noun']
     
     def morphs(self, phrase, norm=False, stem=False):
         return [s for s, t in self.pos(phrase)]
