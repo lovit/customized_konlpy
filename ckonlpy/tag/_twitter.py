@@ -9,10 +9,11 @@ from ckonlpy.utils import loadtxt
 
 
 class Twitter:
-    def __init__(self, load_default_dictionary=True):
+    def __init__(self, use_twitter_dictionary=True):
         self._base = KoNLPyTwitter()
         self._dictionary = CustomizedDictionary()
-        if load_default_dictionary:
+        self._loaded_twitter_default_dictionary = use_twitter_dictionary
+        if use_twitter_dictionary:
             self._load_default_dictionary()
         self._customized_tagger = self._load_customized_tagger()
         self.tagset = tagset
