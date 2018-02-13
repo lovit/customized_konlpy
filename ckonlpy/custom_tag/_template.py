@@ -65,10 +65,10 @@ class SimpleTemplateTagger:
 class SimpleSelector:
     def __init__(self):
         self.weight = {
-            'noun_length': 1,
-            'noun_numbers': -0.2,
-            'wordlist_length': -0.1,
-            'no_noun': -0.5
+            'max_length_of_noun': 0.5,
+            'num_of_nouns': -0.2,
+            'num_of_words': -0.1,
+            'num_noun_is_zero': -0.5
         }
 
     def select(self, candidates):
@@ -80,9 +80,16 @@ class SimpleSelector:
         return candidates[best]
     
     def score(self, candidate):
-        noun_length = sum([len(w) for w, t in candidate if t == 'Noun'])
-        noun_numbers = len([1 for w, t in candidate if t == 'Noun'])
-        wordlist_length = len(candidate)
-        no_noun = 0 if [1 for w, t in candidate if t == 'Noun'] else 1
+        num_of_nouns = len([1 for w, t in candidate if t == 'Noun'])
+        if num_of_nouns:
+            max_length_of_noun = max([len(w) for w, t in candidate if t == 'Noun'])
+        else:
+            max_length_of_noun = 0
+        num_of_words = len(candidate)
+        num_noun_is_zero = 0 if num_of_nouns else 1
 
-        return noun_length * self.weight.get('noun_length', 0) + noun_numbers * self.weight.get('noun_numbers', 0) + wordlist_length * self.weight.get('wordlist_length', 0) + no_noun * self.weight.get('no_noun', 0)
+        return (max_length_of_noun * self.weight.get('max_length_of_noun', 0)
+                + num_of_nouns * self.weight.get('noun_numbers', 0)
+                + num_of_words * self.weight.get('num_of_words', 0)
+                + num_noun_is_zero * self.weight.get('num_noun_is_zero', 0)
+               )
