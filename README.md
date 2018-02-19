@@ -84,6 +84,38 @@ Templates를 이용하여도 후보가 여러 개 나올 수 있습니다. 여�
 
     twitter.set_selector(score_weights, my_score)
 
+### Postprocessor
+
+passwords, stopwords, passtags, 단어 치환을 위한 후처리를 할 수 있습니다. 
+
+passwords 에 등록된 단어, (단어, 품사)만 출력됩니다.
+
+    passwords = {'아이오아이', ('정말', 'Noun')}
+    postprocessor = Postprocessor(twitter, passwords = passwords)
+    postprocessor.tag('우리아이오아이는 정말 이뻐요')
+    # [('아이오아이', 'Noun'), ('정말', 'Noun')]
+
+stopwords 에 등록된 단어, (단어, 품사)는 출력되지 않습니다. 
+
+    stopwords = {'는'}
+    postprocessor = Postprocessor(twitter, stopwords = stopwords)
+    postprocessor.tag('우리아이오아이는 정말 이뻐요')
+    # [('우리', 'Modifier'), ('아이오아이', 'Noun'), ('정말', 'Noun'), ('이뻐', 'Adjective'), ('요', 'Eomi')]
+
+특정 품사를 지정하면, 해당 품사만 출력됩니다. 
+
+    passtags = {'Noun'}
+    postprocessor = Postprocessor(twitter, passtags = passtags)
+    postprocessor.tag('우리아이오아이는 정말 이뻐요')
+    # [('아이오아이', 'Noun'), ('정말', 'Noun')]
+
+치환할 단어, (단어, 품사)를 dict 형식으로 정의하면 tag 에서 단어가 치환되어 출력됩니다.
+
+    replace = {'아이오아이': '아이돌', ('이뻐', 'Adjective'): '예쁘다'}
+    postprocessor = Postprocessor(twitter, replace = replace)
+    postprocessor.tag('우리아이오아이는 정말 이뻐요')
+    [('우리', 'Modifier'), ('아이돌', 'Noun'), ('는', 'Josa'), ('정말', 'Noun'), ('예쁘다', 'Adjective'), ('요', 'Eomi')]
+
 ## Install
 
     $ git clone https://github.com/lovit/customized_konlpy.git
