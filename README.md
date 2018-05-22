@@ -116,6 +116,43 @@ stopwords 에 등록된 단어, (단어, 품사)는 출력되지 않습니다.
     postprocessor.tag('우리아이오아이는 정말 이뻐요')
     [('우리', 'Modifier'), ('아이돌', 'Noun'), ('는', 'Josa'), ('정말', 'Noun'), ('예쁘다', 'Adjective'), ('요', 'Eomi')]
 
+### Loading wordset
+
+utils 에는 stopwords, passwords, replace word pair 를 파일로 저장하였을 경우, 이를 손쉽게 불러오는 함수가 있습니다.
+
+load_wordset 은 set of str 혹은 set of tuple 을 return 합니다. 예시의 passwords.txt 의 내용은 아래와 같습니다. 단어의 품사는 한 칸 띄어쓰기로 구분합니다. stopwords.txt 도 동일한 포멧입니다.
+
+    아이오아이
+    아이오아이 Noun
+    공연
+
+load_wordset 을 이용하는 예시코드 입니다.
+
+    from ckonlpy.utils import load_wordset
+
+    passwords = load_wordset('./passwords.txt')
+    print(passwords) # {('아이오아이', 'Noun'), '아이오아이', '공연'}
+
+    stopwords = load_wordset('./stopwords.txt')
+    print(stopwords) # {'은', '는', ('이', 'Josa')}
+
+치환할 단어쌍은 tap 구분이 되어있습니다. 치환될 단어에 품사 태그가 있을 경우 한 칸 띄어쓰기로 구분합니다.
+
+    str\tstr
+    str str\tstr
+
+아래는 replacewords.txt 의 예시입니다.
+
+    아빠	아버지
+    엄마 Noun	어머니
+
+load_replace_wordpair 을 이용하는 예시코드 입니다.
+
+    from ckonlpy.utils import load_replace_wordpair
+
+    replace = load_replace_wordpair('./replacewords.txt')
+    print(replace) # {'아빠': '아버지', ('엄마', 'Noun'): '어머니'}
+
 ## Install
 
     $ git clone https://github.com/lovit/customized_konlpy.git
