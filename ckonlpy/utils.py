@@ -26,3 +26,38 @@ def loadtxt(fname, encoding='utf-8'):
     except Exception as e:
         print(e)
         return []
+
+def load_wordset(fname, encoding='utf-8'):
+    try:
+        wordset = set()
+        with open(fname, encoding=encoding) as f:
+            for line in f:
+                word = line.strip().split(' ')
+                if len(word) == 1:
+                    wordset.add(word[0])
+                elif len(word) == 2:
+                    wordset.add(tuple(word))
+        return wordset
+    except Exception as e:
+        print(e)
+        return set()
+
+def load_replace_wordpair(fname, encoding='utf-8'):
+    try:
+        replace_wordset = {}
+        with open(fname, encoding=encoding) as f:
+            for line in f:
+                try:
+                    source, target = line.strip().split('\t')
+                    source = source.split(' ')
+                    if len(source) == 1:
+                        source = source[0]
+                    elif len(source) == 2:
+                        source = tuple(source)
+                    replace_wordset[source] = target
+                except:
+                    continue
+        return replace_wordset
+    except Exception as e:
+        print(e)
+        return {}

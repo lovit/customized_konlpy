@@ -10,3 +10,5 @@ from .dictionary import CustomizedDictionary
 from .utils import installpath
 from .utils import load_dictionary
 from .utils import loadtxt
+from .utils import load_wordset
+from .utils import load_replace_wordpair
