@@ -90,6 +90,8 @@ passwords, stopwords, passtags, 단어 치환을 위한 후처리를 할 수 있
 
 passwords 에 등록된 단어, (단어, 품사)만 출력됩니다.
 
+    from ckonlpy.tag import Postprocessor
+    
     passwords = {'아이오아이', ('정말', 'Noun')}
     postprocessor = Postprocessor(twitter, passwords = passwords)
     postprocessor.tag('우리아이오아이는 정말 이뻐요')
