@@ -31,7 +31,7 @@ class Twitter:
         self._dictionary.add_dictionary(load_dictionary('%s/adverb' % directory), 'Adverb')
         #self._dictionary.add_dictionary(load_dictionary(modifier_dir), 'Modifier')
         
-    def pos(self, phrase):
+    def pos(self, phrase, norm=False, stem=False):
         eojeols = phrase.split()
         tagged = []
         for eojeol in eojeols:
@@ -39,7 +39,7 @@ class Twitter:
             if tagged0:
                 tagged += tagged0
                 continue
-            tagged += self._base.pos(eojeol)
+            tagged += self._base.pos(eojeol, norm=norm, stem=stem)
         return tagged
     
     def nouns(self, phrase):
