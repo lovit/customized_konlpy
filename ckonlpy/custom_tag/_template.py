@@ -1,66 +1,19 @@
 class SimpleTemplateTagger:
-    def __init__(self, templates, dictionary, selector=None, max_length=10):
+    def __init__(self, templates, dictionary, selector=None):
         self.templates = templates
         self.dictionary = dictionary
-        self.max_length = max_length
-        self.selector = selector if selector else SimpleSelector()
+        # self.selector = selector if selector else SimpleSelector()
 
-    def pos(self, eojeol):
-        """eojeol: str"""
-        
-        best_candidates = []
-        for template in self.templates:
-            n = len(eojeol)
-            
-            # Initialize
-            candidates = []
-            for e in range(1, min(self.max_length, n)+1):
-                word = eojeol[:e]
-                if self.dictionary.is_tag(word, template[0]):
-                    candidates.append([(word, template[0], e)])
-            if not candidates:
-                continue
+    def _match_words(self, eojeol):
+        n = len(eojeol)
 
-            # Expansion
-            for t in template[1:]:
-                candidates_ = []
-                for candidate in candidates:
-                    word, t0, b = candidate[-1]
-                    for e in range(b, min(self.max_length+b, n)+1):
-                        word = eojeol[b:e]
-                        if self.dictionary.is_tag(word, t):
-                            candidates_.append(candidate + [(word, t, e)])
-                candidates = candidates_
-                if not candidates:
-                    break
-            
-            # Select best one
-            candidates = [[tagged[:2] for tagged in c] for c in candidates if c[-1][2] == n]
-            if candidates:
-                best_candidates += candidates
-        
-        if best_candidates:
-            return self.selector.select(best_candidates)
-        
-        return None
-    
-    def add_a_template(self, a_template):
-        if type(a_template) != tuple:
-            a_template = tuple(a_template)
-        if (a_template in self.templates) == False:
-            self.templates.append(a_template)
-    
-    def set_selector(self, my_weight_dict, my_score_function):
-        self.selector.weight = my_weight_dict
-        self.selector.score = my_score_function
-        test_candidates = [
-            [('이', 'Noun'), ('것', 'Noun'), ('은', 'Josa'), ('테', 'Noun'), ('스트', 'Noun')],
-            [('이것', 'Noun'), ('은', 'Josa'), ('테', 'Noun'), ('스트', 'Noun')],
-            [('이것', 'Noun'), ('은', 'Josa'), ('테스트', 'Noun')]
-        ]
-        for test_candidate in test_candidates:
-            print(test_candidate)
-        print('best:', self.selector.select(test_candidates))
+        word_pos = []
+        for b in range(n):
+            for e in range(b+2, min(n, b + self.dictionary._max_length) + 1):
+                word = eojeol[b:e]
+                for tag in self.dictionary.get_tags(word):
+                    word_pos.append([word, tag, b, e])
+        return word_pos
 
 class SimpleSelector:
     def __init__(self):
