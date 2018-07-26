@@ -2,6 +2,7 @@ class SimpleEvaluator:
     def __init__(self, preference=None):
         self.weight = (
             ('max_length_of_noun', 0.5),
+            ('length_of_phrase', 0.1),
             ('exist_noun', 0.2),
             ('single_word', -0.1)
         )
@@ -39,6 +40,7 @@ class SimpleEvaluator:
 
         scores = (
             _max_length_of_noun(wordpos_list),
+            wordpos_list[-1][3] - wordpos_list[0][2],
             _num_of_nouns(wordpos_list) > 0,
             _num_of_words(wordpos_list) == 1
         )
