@@ -17,6 +17,53 @@ class SimpleTemplateTagger:
             matched.append(sublist)
         return matched
 
+    def _match_templates(self, wordpos_nested_list, debug=False):
+
+        n = len(wordpos_nested_list)
+        matcheds = []
+
+        # for each begin position
+        for wordpos_list in wordpos_nested_list:
+            # for each (word, pos, begin, end)
+            for wordpos in wordpos_list:
+                # for each template
+                for template in self.templates:
+                    if template[0] == wordpos[1]:
+                        expandeds = self._expand(
+                            wordpos, template, wordpos_nested_list, n, debug)
+                        matcheds += expandeds
+
+        return matcheds
+
+    def _expand(self, wordpos, template, wordpos_nested_list, n, debug):
+
+        def get_matched_wordpos(wordpos_list, tag):
+            return [wordpos for wordpos in wordpos_list if wordpos[1] == tag]
+
+        # Initialize candidates
+        candidates = [[wordpos]]
+
+        # Expansion
+        for match_tag in template[1:]:
+            candidates_ = []
+            for candidate in candidates:
+                last_index = candidate[-1][3]
+                if last_index >= n:
+                    continue
+                expandables = get_matched_wordpos(
+                    wordpos_nested_list[last_index], match_tag)
+                for expandable in expandables:
+                    expanded = [c for c in candidate] + [expandable]
+                    candidates_.append(expanded)
+            candidates = candidates_
+
+        if debug and candidates:
+            print('\ntemplate = {}'.format(template))
+            for candidate in candidates:
+                print(candidate)
+
+        return candidates
+
 class SimpleSelector:
     def __init__(self):
         self.weight = {
