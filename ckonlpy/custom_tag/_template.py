@@ -1,10 +1,10 @@
-from ._selector import SimpleSelector
+from ._evaluator import SimpleEvaluator
 
 class SimpleTemplateTagger:
-    def __init__(self, templates, dictionary, selector=None):
+    def __init__(self, templates, dictionary, evaluator=None):
         self.templates = templates
         self.dictionary = dictionary
-        self.selector = selector if selector else SimpleSelector()
+        self.evaluator = evaluator if evaluator else SimpleEvaluator()
 
     def pos(self, eojeol, debug=False):
 

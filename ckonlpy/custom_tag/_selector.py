@@ -1,4 +1,4 @@
-class SimpleSelector:
+class SimpleEvaluator:
     def __init__(self, preference=None):
         self.weight = {
             'max_length_of_noun': 0.5,
@@ -17,7 +17,7 @@ class SimpleSelector:
         best = sorted(enumerate(scores), key=lambda x:x[1], reverse=True)[0][0]
         return candidates[best]
 
-    def score(self, wordpos_list):
+    def evaluate(self, wordpos_list):
         max_length_of_noun = _max_length_of_noun(wordpos_list)
         num_of_nouns = _num_of_nouns(wordpos_list)
         num_of_words = _num_of_words(wordpos_list)
