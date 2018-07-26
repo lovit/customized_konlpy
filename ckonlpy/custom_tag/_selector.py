@@ -6,6 +6,7 @@ class SimpleEvaluator:
             ('exist_noun', 0.2),
             ('single_word', -0.1)
         )
+        # preference = { (word, pos) : score }
         self.preference = preference if preference else {}
 
     def select(self, candidates, debug=False):
@@ -45,13 +46,19 @@ class SimpleEvaluator:
             _num_of_words(wordpos_list) == 1
         )
 
+        score_sum = _wordpos_preference(wordpos_list, self.preference)
+
         if debug:
             print('\n{}'.format(wordpos_list))
             for score, (field, weight) in zip(scores, self.weight):
                 print('{}, w={}, s={}, prod={}'.format(
                         field, weight, score, weight * score))
+            print('preference score = {}'.format(score_sum))
 
-        return sum((score * weight for score, (_, weight) in zip(scores, self.weight)))
+        score_sum += sum((score * weight for score, (_, weight)
+                          in zip(scores, self.weight)))
+
+        return score_sum
 
 def _max_length_of_noun(wordpos_list):
     satisfied = [len(wordpos[0]) for wordpos in wordpos_list if wordpos[1] == 'Noun']
@@ -62,3 +69,9 @@ def _num_of_nouns(wordpos_list):
 
 def _num_of_words(wordpos_list):
     return len(wordpos_list)
+
+def _wordpos_preference(wordpos_list, preference):
+    score = 0
+    for word, pos, _, _ in wordpos_list:
+        score += preference.get((word, pos), 0)
+    return score
