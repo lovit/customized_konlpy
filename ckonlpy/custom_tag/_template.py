@@ -1,4 +1,4 @@
-from ._evaluator import SimpleEvaluator
+from ckonlpy.utils import installpath
 
 class SimpleTemplateTagger:
 
@@ -23,15 +23,14 @@ class SimpleTemplateTagger:
 
 def _initialize_templates(templates, dictionary):
     if not templates:
-        templates = [
-            ('Noun', 'Josa'),
-            ('Noun', 'Adjective'),
-            ('Noun', 'Verb'),
-            ('Modifier', 'Noun'),
-            ('Modifier', 'Noun', 'Josa'),
+        templatespath = '%s/data/templates/twitter_templates0' % installpath
+        templates = loadtxt(templatespath)
+        templates = [tuple(template.split()) for template in templates]
 
-        ]
-    templates += [(pos, ) for pos in dictionary._pos2words]
+    single_words = [(pos, ) for pos in dictionary._pos2words]
+    templates += [template for template in single_words
+                  if not template in templates]
+
     return templates
 
 def _match_words(eojeol, dictionary):
