@@ -1,4 +1,6 @@
 from ckonlpy.utils import installpath
+from ckonlpy.utils import loadtxt
+from ._evaluator import SimpleEvaluator
 
 class SimpleTemplateTagger:
 
