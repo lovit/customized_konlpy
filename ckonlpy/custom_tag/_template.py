@@ -9,10 +9,12 @@ class SimpleTemplateTagger:
 
         matched = []
         for b in range(n):
-            for e in range(b+2, min(n, b + self.dictionary._max_length) + 1):
+            sublist = []
+            for e in range(b+1, min(n, b + self.dictionary._max_length) + 1):
                 word = eojeol[b:e]
                 for tag in self.dictionary.get_tags(word):
-                    matched.append([word, tag, b, e])
+                    sublist.append((word, tag, b, e))
+            matched.append(sublist)
         return matched
 
 class SimpleSelector:
