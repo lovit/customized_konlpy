@@ -25,7 +25,7 @@ class SimpleSelector:
         single_word = num_of_words == 1
 
         return (max_length_of_noun * self.weight.get('max_length_of_noun', 0)
-                + num_of_nouns * self.weight.get('noun_numbers', 0)
+                + num_of_nouns * self.weight.get('num_of_nouns', 0)
                 + num_of_words * self.weight.get('num_of_words', 0)
                 + exist_noun * self.weight.get('exist_noun', 0)
                 + single_word * self.weight.get('single_word', 0)
