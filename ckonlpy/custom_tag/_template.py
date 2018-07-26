@@ -1,10 +1,15 @@
 from ._evaluator import SimpleEvaluator
 
 class SimpleTemplateTagger:
-    def __init__(self, templates, dictionary, evaluator=None):
-        self.templates = templates
+
+    def __init__(self, dictionary, templates=None, evaluator=None):
+
+        if not evaluator:
+            evaluator = SimpleEvaluator()
+
         self.dictionary = dictionary
-        self.evaluator = evaluator if evaluator else SimpleEvaluator()
+        self.templates = _initialize_templates(templates, dictionary)
+        self.evaluator = evaluator
 
     def pos(self, eojeol, debug=False):
 
@@ -15,6 +20,19 @@ class SimpleTemplateTagger:
             wordpos_nested_list, self.templates, debug)
 
         return template_matcheds
+
+def _initialize_templates(templates, dictionary):
+    if not templates:
+        templates = [
+            ('Noun', 'Josa'),
+            ('Noun', 'Adjective'),
+            ('Noun', 'Verb'),
+            ('Modifier', 'Noun'),
+            ('Modifier', 'Noun', 'Josa'),
+
+        ]
+    templates += [(pos, ) for pos in dictionary._pos2words]
+    return templates
 
 def _match_words(eojeol, dictionary):
     n = len(eojeol)
