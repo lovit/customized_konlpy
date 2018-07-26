@@ -4,65 +4,75 @@ class SimpleTemplateTagger:
         self.dictionary = dictionary
         # self.selector = selector if selector else SimpleSelector()
 
-    def _match_words(self, eojeol):
-        n = len(eojeol)
+    def pos(self, eojeol, debug=False):
 
-        matched = []
-        for b in range(n):
-            sublist = []
-            for e in range(b+1, min(n, b + self.dictionary._max_length) + 1):
-                word = eojeol[b:e]
-                for tag in self.dictionary.get_tags(word):
-                    sublist.append((word, tag, b, e))
-            matched.append(sublist)
-        return matched
+        wordpos_nested_list = _match_words(
+            eojeol, self.dictionary)
 
-    def _match_templates(self, wordpos_nested_list, debug=False):
+        template_matcheds = _match_templates(
+            wordpos_nested_list, self.templates, debug)
 
-        n = len(wordpos_nested_list)
-        matcheds = []
+        return template_matcheds
 
-        # for each begin position
-        for wordpos_list in wordpos_nested_list:
-            # for each (word, pos, begin, end)
-            for wordpos in wordpos_list:
-                # for each template
-                for template in self.templates:
-                    if template[0] == wordpos[1]:
-                        expandeds = self._expand(
-                            wordpos, template, wordpos_nested_list, n, debug)
-                        matcheds += expandeds
+def _match_words(eojeol, dictionary):
+    n = len(eojeol)
 
-        return matcheds
+    matched = []
+    for b in range(n):
+        sublist = []
+        for e in range(b+1, min(n, b + dictionary._max_length) + 1):
+            word = eojeol[b:e]
+            for tag in dictionary.get_tags(word):
+                sublist.append((word, tag, b, e))
+        matched.append(sublist)
+    return matched
 
-    def _expand(self, wordpos, template, wordpos_nested_list, n, debug):
+def _match_templates(wordpos_nested_list, templates, debug=False):
 
-        def get_matched_wordpos(wordpos_list, tag):
-            return [wordpos for wordpos in wordpos_list if wordpos[1] == tag]
+    n = len(wordpos_nested_list)
+    matcheds = []
 
-        # Initialize candidates
-        candidates = [[wordpos]]
+    # for each begin position
+    for wordpos_list in wordpos_nested_list:
+        # for each (word, pos, begin, end)
+        for wordpos in wordpos_list:
+            # for each template
+            for template in templates:
+                if template[0] == wordpos[1]:
+                    expandeds = _expand(
+                        wordpos, template, wordpos_nested_list, n, debug)
+                    matcheds += expandeds
 
-        # Expansion
-        for match_tag in template[1:]:
-            candidates_ = []
-            for candidate in candidates:
-                last_index = candidate[-1][3]
-                if last_index >= n:
-                    continue
-                expandables = get_matched_wordpos(
-                    wordpos_nested_list[last_index], match_tag)
-                for expandable in expandables:
-                    expanded = [c for c in candidate] + [expandable]
-                    candidates_.append(expanded)
-            candidates = candidates_
+    return matcheds
 
-        if debug and candidates:
-            print('\ntemplate = {}'.format(template))
-            for candidate in candidates:
-                print(candidate)
+def _expand(wordpos, template, wordpos_nested_list, n, debug):
 
-        return candidates
+    def get_matched_wordpos(wordpos_list, tag):
+        return [wordpos for wordpos in wordpos_list if wordpos[1] == tag]
+
+    # Initialize candidates
+    candidates = [[wordpos]]
+
+    # Expansion
+    for match_tag in template[1:]:
+        candidates_ = []
+        for candidate in candidates:
+            last_index = candidate[-1][3]
+            if last_index >= n:
+                continue
+            expandables = get_matched_wordpos(
+                wordpos_nested_list[last_index], match_tag)
+            for expandable in expandables:
+                expanded = [c for c in candidate] + [expandable]
+                candidates_.append(expanded)
+        candidates = candidates_
+
+    if debug and candidates:
+        print('\ntemplate = {}'.format(template))
+        for candidate in candidates:
+            print(candidate)
+
+    return candidates
 
 class SimpleSelector:
     def __init__(self):
