@@ -31,7 +31,7 @@ class SimpleSelector:
             scores.append(score)
         best = sorted(enumerate(scores), key=lambda x:x[1], reverse=True)[0][0]
         return candidates[best]
-    
+
     def score(self, candidate):
         num_of_nouns = len([1 for w, t in candidate if t == 'Noun'])
         if num_of_nouns:
