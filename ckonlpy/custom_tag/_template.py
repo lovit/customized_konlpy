@@ -1,5 +1,6 @@
 from ckonlpy.utils import installpath
 from ckonlpy.utils import loadtxt
+from ckonlpy.data.tagset import twitter as tagset
 from ._evaluator import SimpleEvaluator
 
 class SimpleTemplateTagger:
@@ -31,7 +32,8 @@ def _initialize_templates(templates, dictionary):
         templates = loadtxt(templatespath)
         templates = [tuple(template.split()) for template in templates]
 
-    single_words = [(pos, ) for pos in dictionary._pos2words]
+    single_words = [(pos, ) for pos in dictionary._pos2words
+                    if not (pos in tagset)]
     templates += [template for template in single_words
                   if not template in templates]
 
