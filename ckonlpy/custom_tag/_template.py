@@ -7,13 +7,13 @@ class SimpleTemplateTagger:
     def _match_words(self, eojeol):
         n = len(eojeol)
 
-        word_pos = []
+        matched = []
         for b in range(n):
             for e in range(b+2, min(n, b + self.dictionary._max_length) + 1):
                 word = eojeol[b:e]
                 for tag in self.dictionary.get_tags(word):
-                    word_pos.append([word, tag, b, e])
-        return word_pos
+                    matched.append([word, tag, b, e])
+        return matched
 
 class SimpleSelector:
     def __init__(self):
