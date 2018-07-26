@@ -64,6 +64,9 @@ def _match_templates(wordpos_nested_list, templates, debug=False):
             # for each template
             for template in templates:
                 if template[0] == wordpos[1]:
+                    # skip a syllable single word
+                    if len(template) == 1 and len(wordpos[0]) == 1:
+                        continue
                     expandeds = _expand(
                         wordpos, template, wordpos_nested_list, n, debug)
                     matcheds += expandeds
