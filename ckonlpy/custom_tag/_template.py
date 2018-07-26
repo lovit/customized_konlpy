@@ -18,10 +18,12 @@ class SimpleTemplateTagger:
         wordpos_nested_list = _match_words(
             eojeol, self.dictionary)
 
-        template_matcheds = _match_templates(
+        matcheds = _match_templates(
             wordpos_nested_list, self.templates, debug)
 
-        return template_matcheds
+        matcheds = self.evaluator.select(matcheds, debug=debug)
+
+        return matcheds
 
 def _initialize_templates(templates, dictionary):
     if not templates:
