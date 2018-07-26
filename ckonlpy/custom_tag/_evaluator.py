@@ -35,6 +35,8 @@ class SimpleEvaluator:
             e = selected[-1][2]
             scoreds = [c for c in scoreds if not is_overlab(b, e, c)]
 
+        # sort by begin index
+        selected = sorted(selected, key=lambda x:x[1])
         return selected
 
     def evaluate(self, wordpos_list, debug=False):
