@@ -15,7 +15,7 @@ class SimpleTemplateTagger:
         self.templates = _initialize_templates(templates, dictionary)
         self.evaluator = evaluator
 
-    def pos(self, eojeol, debug=False):
+    def pos(self, eojeol):
 
         if not eojeol:
             return []
@@ -23,7 +23,7 @@ class SimpleTemplateTagger:
         n = len(eojeol)
         wordpos_nested_list = _match_words(eojeol, self.dictionary)
         matcheds = _match_templates(wordpos_nested_list, self.templates, debug)
-        matcheds = self.evaluator.select(matcheds, debug=debug)
+        matcheds = self.evaluator.select(matcheds)
         words = _append_unmatched(matcheds, eojeol)
         return words
 
