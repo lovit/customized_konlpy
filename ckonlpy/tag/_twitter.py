@@ -31,11 +31,13 @@ class Twitter:
         eojeols = phrase.split()
         tagged = []
         for eojeol in eojeols:
-            tagged0 = self.template_tagger.pos(eojeol)
-            if tagged0:
-                tagged += tagged0
-                continue
-            tagged += self._base.pos(eojeol, norm=norm, stem=stem)
+            wordpos_list = self.template_tagger.pos(eojeol)
+            for word, pos, _, _ in wordpos_list:
+                if pos is not None:
+                    tagged.append((word, pos))
+                    continue
+                for word_, pos_ in self._base.pos(word, norm=norm, stem=stem):
+                    tagged.append((word_, pos_))
         return tagged
 
     def nouns(self, phrase):
