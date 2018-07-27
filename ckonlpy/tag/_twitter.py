@@ -27,11 +27,22 @@ class Twitter:
         #self.dictionary.add_dictionary(
         #    load_dictionary(modifier_dir), 'Modifier')
 
-    def pos(self, phrase, norm=False, stem=False):
+    def pos(self, phrase, norm=False, stem=False, perfect_match=False):
+
+        def has_None(wordpos_list):
+            return len([True for _, pos, _, _ in wordpos_list if pos is None]) > 0
+
         eojeols = phrase.split()
         tagged = []
+
         for eojeol in eojeols:
+
             wordpos_list = self.template_tagger.pos(eojeol)
+
+            if perfect_match and has_None(wordpos_list):
+                tagged += self._base.pos(word, norm=norm, stem=stem)
+                continue
+
             for word, pos, _, _ in wordpos_list:
                 if pos is not None:
                     tagged.append((word, pos))
