@@ -20,18 +20,17 @@ class SimpleTemplateTagger:
             return []
 
         n = len(eojeol)
-
-        wordpos_nested_list = _match_words(
-            eojeol, self.dictionary)
-
-        matcheds = _match_templates(
-            wordpos_nested_list, self.templates, debug)
-
+        wordpos_nested_list = _match_words(eojeol, self.dictionary)
+        matcheds = _match_templates(wordpos_nested_list, self.templates, debug)
         matcheds = self.evaluator.select(matcheds, debug=debug)
-
         words = _append_unmatched(matcheds, eojeol)
-
         return words
+
+    def add_a_template(self, a_template):
+        if type(a_template) != tuple:
+            a_template = tuple(a_template)
+        if (a_template in self.templates) == False:
+            self.templates.append(a_template)
 
 def _initialize_templates(templates, dictionary):
     if not templates:
