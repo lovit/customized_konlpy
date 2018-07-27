@@ -16,6 +16,11 @@ class SimpleTemplateTagger:
 
     def pos(self, eojeol, debug=False):
 
+        if not eojeol:
+            return []
+
+        n = len(eojeol)
+
         wordpos_nested_list = _match_words(
             eojeol, self.dictionary)
 
@@ -24,7 +29,9 @@ class SimpleTemplateTagger:
 
         matcheds = self.evaluator.select(matcheds, debug=debug)
 
-        return matcheds
+        words = _append_unmatched(matcheds, eojeol)
+
+        return words
 
 def _initialize_templates(templates, dictionary):
     if not templates:
@@ -101,3 +108,25 @@ def _expand(wordpos, template, wordpos_nested_list, n, debug):
             print(candidate)
 
     return candidates
+
+def _append_unmatched(matcheds, eojeol):
+
+    n = len(eojeol)
+    words = [word for match, _, _, _ in matcheds for word in match]
+    if not words:
+        return [(eojeol, None, 0, n)]
+
+    begin = 0
+    unmatcheds = []
+    for word in words:
+        if begin == word[2]:
+            begin = word[3]
+            continue
+        unmatcheds.append((eojeol[begin:word[2]], None, begin, word[2]))
+        begin = word[3]
+    if begin < n:
+        unmatcheds.append((eojeol[begin:], None, begin, n))
+
+    words += unmatcheds
+    words = sorted(words, key=lambda x:x[2])
+    return words
