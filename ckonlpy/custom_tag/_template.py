@@ -2,6 +2,7 @@ from ckonlpy.utils import installpath
 from ckonlpy.utils import loadtxt
 from ckonlpy.data.tagset import twitter as tagset
 from ._evaluator import SimpleEvaluator
+from pprint import pprint
 
 class SimpleTemplateTagger:
 
@@ -31,6 +32,24 @@ class SimpleTemplateTagger:
             a_template = tuple(a_template)
         if (a_template in self.templates) == False:
             self.templates.append(a_template)
+
+    def set_evaluator(self, my_weight_tuple, my_evaluate_function, test=True):
+        self.evaluator.weight = my_weight_tuple
+        self.evaluator.evaluate = my_evaluate_function
+
+        if not test:
+            return
+
+        for test_candidate in test_candidates:
+            print('candidate')
+            pprint(test_candidate)
+            print('score = {}\n'.format(self.evaluator.evaluate(test_candidate)))
+
+test_candidates = [
+    [('이', 'Noun', 0, 1), ('것', 'Noun', 1, 2), ('은', 'Josa', 2, 3), ('테', 'Noun', 3, 4), ('스트', 'Noun', 4, 6)],
+    [('이것', 'Noun', 0, 2), ('은', 'Josa', 2, 3), ('테', 'Noun', 3, 4), ('스트', 'Noun', 4, 6)],
+    [('이것', 'Noun', 0, 2), ('은', 'Josa', 2, 3), ('테스트', 'Noun', 3, 6)]
+]
 
 def _initialize_templates(templates, dictionary):
     if not templates:
