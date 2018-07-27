@@ -8,15 +8,16 @@ class SimpleEvaluator:
         )
         # preference = { (word, pos) : score }
         self.preference = preference if preference else {}
+        self.debug = False
 
-    def select(self, candidates, debug=False):
+    def select(self, candidates):
 
         def evaluating_format(wordpos_list):
             formed = (
                 wordpos_list,
                 wordpos_list[0][2],
                 wordpos_list[-1][3],
-                self.evaluate(wordpos_list, debug)
+                self.evaluate(wordpos_list)
             )
             return formed
 
@@ -39,7 +40,7 @@ class SimpleEvaluator:
         selected = sorted(selected, key=lambda x:x[1])
         return selected
 
-    def evaluate(self, wordpos_list, debug=False):
+    def evaluate(self, wordpos_list):
 
         scores = (
             _max_length_of_noun(wordpos_list),
@@ -50,7 +51,7 @@ class SimpleEvaluator:
 
         score_sum = _wordpos_preference(wordpos_list, self.preference)
 
-        if debug:
+        if self.debug:
             print('\n{}'.format(wordpos_list))
             for score, (field, weight) in zip(scores, self.weight):
                 print('{}, w={}, s={}, prod={}'.format(
