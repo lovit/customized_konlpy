@@ -72,5 +72,8 @@ class Twitter:
             raise ValueError('%s is not available tag' % tag)
         self.dictionary.load_dictionary(fname_list, tag)
 
-    def set_selector(self, my_weight_dict, my_score_function):
-        self.template_tagger.set_selector(my_weight_dict, my_score_function)
+    def add_a_template(self, a_template):
+        self.template_tagger.add_a_template(a_template)
+
+    def set_evaluator(self, my_weight_tuple, my_evaluate_function, test=True):
+        self.template_tagger.set_evaluator(my_weight_tuple, my_evaluate_function, test)
