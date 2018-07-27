@@ -40,7 +40,7 @@ class Twitter:
             wordpos_list = self.template_tagger.pos(eojeol)
 
             if perfect_match and has_None(wordpos_list):
-                tagged += self._base.pos(word, norm=norm, stem=stem)
+                tagged += self._base.pos(eojeol, norm=norm, stem=stem)
                 continue
 
             for word, pos, _, _ in wordpos_list:
