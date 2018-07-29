@@ -18,6 +18,42 @@ class Postprocessor:
             first_to_ngram[ngram[0]].append(ngram)
         return dict(first_to_ngram)
 
+    def _as_ngram(self, words):
+        def same(wordpos_list, ngram):
+            for wordpos, uni in zip(wordpos_list, ngram):
+                if (wordpos != uni) and (wordpos[0] != uni):
+                    return False
+            return True
+
+        words_ = []
+        n = len(words)
+        idx = 0
+
+        while idx < n:
+
+            candidates = self.ngrams.get(words[idx][0], None)
+
+            if not candidates:
+                words_.append(words[idx])
+                idx += 1
+                continue
+
+            appended = False
+            for ngram in candidates:
+                stride = len(ngram)
+                sliced = words[idx:idx+stride]
+                if same(sliced, ngram):
+                    words_.append((' - '.join([w for w, _ in sliced]), 'Noun'))
+                    appended = True
+                    idx += stride
+                    break
+
+            if not appended:
+                words_.append(words[idx])
+                idx += 1
+
+        return words_
+
     def tag(self, phrase):
         def to_replace(w):
             if w in self.replace:
@@ -28,14 +64,10 @@ class Postprocessor:
                 return w
             return (w_, w[1]) if isinstance(w_, str) else w_
 
-        def as_ngram(words):
-            # TODO
-            return words
-
         words = self.base_tagger.pos(phrase)
 
         if self.ngrams:
-            words = as_ngram(words)
+            words = self._as_ngram(words)
         if self.stopwords:
             words = [w for w in words if not ((w in self.stopwords) or (w[0] in self.stopwords))]
         if self.passwords:
