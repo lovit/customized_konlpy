@@ -13,7 +13,7 @@ customized_KoNLPy는 확실히 알고 있는 단어들에 대해서는 라이브
 
     $ git clone https://github.com/lovit/customized_konlpy.git
     
-    $ pip install customized_konlpy==0.0.6
+    $ pip install customized_konlpy
 
 ### Requires
 
