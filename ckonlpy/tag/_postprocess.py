@@ -15,7 +15,17 @@ class Postprocessor:
             return None
         first_to_ngram = defaultdict(lambda: [])
         for ngram in ngrams:
-            first_to_ngram[ngram[0][0]].append(ngram)
+            try:
+                if isinstance(ngram[0], tuple) and isinstance(ngram[1], str):
+                    first_to_ngram[ngram[0][0]].append(ngram)
+                elif isinstance(ngram, tuple) and isinstance(ngram[0], str):
+                    first_to_ngram[ngram[0]].append((ngram, 'Noun'))
+                else:
+                    print('ngram format error : {}'.format(ngram))
+            except:
+                print('ngram format error : {}'.format(ngram))
+                continue
+
         return dict(first_to_ngram)
 
     def _as_ngram(self, words):
