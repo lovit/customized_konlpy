@@ -15,13 +15,13 @@ class Postprocessor:
             return None
         first_to_ngram = defaultdict(lambda: [])
         for ngram in ngrams:
-            first_to_ngram[ngram[0]].append(ngram)
+            first_to_ngram[ngram[0][0]].append(ngram)
         return dict(first_to_ngram)
 
     def _as_ngram(self, words):
-        def same(wordpos_list, ngram):
-            for wordpos, uni in zip(wordpos_list, ngram):
-                if (wordpos != uni) and (wordpos[0] != uni):
+        def same(wordpos_list, ngram_words):
+            for wordpos, unigram_word in zip(wordpos_list, ngram_words):
+                if (wordpos != unigram_word) and (wordpos[0] != unigram_word):
                     return False
             return True
 
@@ -39,11 +39,11 @@ class Postprocessor:
                 continue
 
             appended = False
-            for ngram in candidates:
-                stride = len(ngram)
+            for ngram_words, ngram_pos in candidates:
+                stride = len(ngram_words)
                 sliced = words[idx:idx+stride]
-                if same(sliced, ngram):
-                    words_.append((' - '.join([w for w, _ in sliced]), 'Noun'))
+                if same(sliced, ngram_words):
+                    words_.append((' - '.join([w for w, _ in sliced]), ngram_pos))
                     appended = True
                     idx += stride
                     break
