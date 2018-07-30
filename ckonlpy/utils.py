@@ -61,3 +61,25 @@ def load_replace_wordpair(fname, encoding='utf-8'):
     except Exception as e:
         print(e)
         return {}
+
+def load_ngram(fname, encoding='utf-8'):
+    ngrams = []
+    with open(fname, encoding=encoding) as f:
+        for line in f:
+            try:
+                if '\t' in line:
+                    words, tag = line.strip().split('\t', 1)
+                    words = tuple(words.split())
+                else:
+                    words = tuple(line.split())
+                    tag = None
+                if len(words) <= 1:
+                    continue
+                if tag:
+                    ngrams.append((words, tag.strip()))
+                else:
+                    ngrams.append(words)
+            except Exception as e:
+                print(e)
+                continue
+    return ngrams

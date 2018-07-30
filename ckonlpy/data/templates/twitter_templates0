@@ -1,9 +1,16 @@
+Adjective
+Adverb
+Conjunction
+Exclamation
+KoreanParticle
 Noun
+Verb
 Noun Noun
 Noun Josa
-Noun Josa Noun
-Noun Noun Josa
+Noun Adjective
+Noun Verb
 Modifier Noun
-Modifier Noun Noun
+Noun Noun Adjective
+Noun Noun Josa
+Noun Noun Verb
 Modifier Noun Josa
-Modifier Noun Noun Josa

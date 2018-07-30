@@ -1,2 +1,2 @@
 from ._template import SimpleTemplateTagger
-from ._template import SimpleSelector
+from ._evaluator import SimpleEvaluator
