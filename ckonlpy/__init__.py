@@ -10,5 +10,6 @@ from .utils import load_dictionary
 from .utils import loadtxt
 from .utils import load_wordset
 from .utils import load_replace_wordpair
+from .utils import load_ngram
 from . import custom_tag
 from . import tag
