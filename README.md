@@ -9,31 +9,16 @@ customized_KoNLPy는 확실히 알고 있는 단어들에 대해서는 라이브
 
 위와 같은 단어 리스트와 탬플릿이 있다면 '아이오아이는' 이라는 어절은 [('아이오아이', 'Noun'), ('는', 'Josa')]로 분리됩니다.
 
-## 0.0.6+ vs 0.0.5x
+## Install
 
-0.0.5x 에서의 변수와 함수의 이름, 변수의 타입 일부를 변경하였습니다.
+    $ git clone https://github.com/lovit/customized_konlpy.git
+    
+    $ pip install customized_konlpy
 
-| 변경 전 | 변경 후 |
-| --- | --- |
-| ckonlpy.tag.Twitter._loaded_twitter_default_dictionary | ckonlpy.tag.Twitter.use_twitter_dictionary |
-| ckonlpy.tag.Twitter._dictionary | ckonlpy.tag.Twitter.dictionary |
-| ckonlpy.tag.Twitter._customized_tagger | ckonlpy.tag.Twitter.template_tagger |
-| ckonlpy.tag.Postprocessor.tag | ckonlpy.tag.Postprocessor.pos |
-| ckonlpy.custom_tag.SimpleSelector | ckonlpy.custom_tag.SimpleEvalator |
-| ckonlpy.custom_tag.SimpleSelector.score | ckonlpy.custom_tag.SimpleEvalator.evaluate |
-| ckonlpy.tag.Twitter.set_selector | ckonlpy.tag.AbstractTagger.set_evaluator |
-| ckonlpy.custom_tag.SimpleSelector.weight | ckonlpy.custom_tag.SimpleEvaluator.weight |
+### Requires
 
-| 변경 후 | 변경 이유 |
-| --- | --- |
-| ckonlpy.tag.Twitter.use_twitter_dictionary | konlpy.tag.Twitter 의 사전 사용 유무 |
-| ckonlpy.tag.Twitter.dictionary | public 으로 변환하였습니다 |
-| ckonlpy.tag.Twitter.template_tagger | Template 기반으로 작동하는 tagger 임을 명시하고, public 으로 변환하였습니다 |
-| ckonlpy.tag.Postprocessor.pos | 기본 tagger 의 결과를 후처리하는 기능이기 때문에 동일한 함수명으로 통일하였습니다 |
-| ckonlpy.custom_tag.SimpleEvalator | 클래스 이름을 Selector 에서 Evaluator 로 변경하였습니다 |
-| ckonlpy.custom_tag.SimpleEvalator.evaluate | 품사열 후보의 점수 계산 부분을 score --> evaluate 로 함수명을 변경하였습니다 |
-| ckonlpy.tag.AbstractTagger.set_evaluator | 품사열 후보의 점수 계산 함수를 설정하는 함수의 이름을 변경하였습니다. 해당 함수는 ckonlpy.tag.Twitter 에서 ckonlpy.tag.AbstractTagger 로 이동하였습니다 |
-| ckonlpy.custom_tag.SimpleEvaluator.weight | {str:float} 형식의 weight 를 [(str, float)] 형식으로 변경하였습니다 |
+- JPype >= 0.6.1
+- KoNLPy >= 0.4.4
 
 ## Usage
 
@@ -201,14 +186,28 @@ load_ngram 을 이용하는 예시코드 입니다.
     ngrams = load_ngram('./ngrams.txt')
     print(ngrams) # [('바람', '의', '나라'), (('미스', '함무라비'), 'Noun')]
 
-## Install
+## 0.0.6+ vs 0.0.5x
 
-    $ git clone https://github.com/lovit/customized_konlpy.git
-    
-    $ pip install customized_konlpy
+0.0.5x 에서의 변수와 함수의 이름, 변수의 타입 일부를 변경하였습니다.
 
-## Requires
+| 변경 전 | 변경 후 |
+| --- | --- |
+| ckonlpy.tag.Twitter._loaded_twitter_default_dictionary | ckonlpy.tag.Twitter.use_twitter_dictionary |
+| ckonlpy.tag.Twitter._dictionary | ckonlpy.tag.Twitter.dictionary |
+| ckonlpy.tag.Twitter._customized_tagger | ckonlpy.tag.Twitter.template_tagger |
+| ckonlpy.tag.Postprocessor.tag | ckonlpy.tag.Postprocessor.pos |
+| ckonlpy.custom_tag.SimpleSelector | ckonlpy.custom_tag.SimpleEvalator |
+| ckonlpy.custom_tag.SimpleSelector.score | ckonlpy.custom_tag.SimpleEvalator.evaluate |
+| ckonlpy.tag.Twitter.set_selector | ckonlpy.tag.AbstractTagger.set_evaluator |
+| ckonlpy.custom_tag.SimpleSelector.weight | ckonlpy.custom_tag.SimpleEvaluator.weight |
 
-- JPype >= 0.6.1
-- KoNLPy >= 0.4.4
-
+| 변경 후 | 변경 이유 |
+| --- | --- |
+| ckonlpy.tag.Twitter.use_twitter_dictionary | konlpy.tag.Twitter 의 사전 사용 유무 |
+| ckonlpy.tag.Twitter.dictionary | public 으로 변환하였습니다 |
+| ckonlpy.tag.Twitter.template_tagger | Template 기반으로 작동하는 tagger 임을 명시하고, public 으로 변환하였습니다 |
+| ckonlpy.tag.Postprocessor.pos | 기본 tagger 의 결과를 후처리하는 기능이기 때문에 동일한 함수명으로 통일하였습니다 |
+| ckonlpy.custom_tag.SimpleEvalator | 클래스 이름을 Selector 에서 Evaluator 로 변경하였습니다 |
+| ckonlpy.custom_tag.SimpleEvalator.evaluate | 품사열 후보의 점수 계산 부분을 score --> evaluate 로 함수명을 변경하였습니다 |
+| ckonlpy.tag.AbstractTagger.set_evaluator | 품사열 후보의 점수 계산 함수를 설정하는 함수의 이름을 변경하였습니다. 해당 함수는 ckonlpy.tag.Twitter 에서 ckonlpy.tag.AbstractTagger 로 이동하였습니다 |
+| ckonlpy.custom_tag.SimpleEvaluator.weight | {str:float} 형식의 weight 를 [(str, float)] 형식으로 변경하였습니다 |
