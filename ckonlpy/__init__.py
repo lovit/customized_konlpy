@@ -1,5 +1,6 @@
-__title__ = 'customized_KoNLPy'
-__version__ = '0.0.6'
+name = "ckonlpy"
+__title__ = 'customized-konlpy'
+__version__ = '0.0.62'
 __author__ = 'Lovit'
 __license__ = 'GPL v3'
 __copyright__ = 'Copyright 2017 Lovit'
