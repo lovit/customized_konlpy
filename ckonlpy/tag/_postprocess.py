@@ -54,7 +54,7 @@ class Postprocessor:
 
         return words_
 
-    def tag(self, phrase):
+    def pos(self, phrase):
         def to_replace(w):
             if w in self.replace:
                 w_ = self.replace[w]
