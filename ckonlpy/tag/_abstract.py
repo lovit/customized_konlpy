@@ -17,9 +17,9 @@ class AbstractTagger:
 
         for eojeol in eojeols:
 
-            wordpos_list = self.template_tagger.pos(eojeol)
+            wordpos_list = self.template_tagger.pos(eojeol, perfect_match)
 
-            if perfect_match and has_None(wordpos_list):
+            if not wordpos_list:
                 tagged += self._base.pos(eojeol, norm=norm, stem=stem)
                 continue
 
