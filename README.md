@@ -9,11 +9,20 @@ customized_KoNLPy는 확실히 알고 있는 단어들에 대해서는 라이브
 
 위와 같은 단어 리스트와 탬플릿이 있다면 '아이오아이는' 이라는 어절은 [('아이오아이', 'Noun'), ('는', 'Josa')]로 분리됩니다.
 
-## Todo list
+## 0.0.6+ vs 0.0.5x
 
-1. 현재는 명사와 같이 스트링매치가 되는 단어에 대해서만 사용자 사전을 인식할 수 있습니다. 빠른 시간 내에 **동사/형용사에 대해서 활용이 되는 경우에도 인식**할 수 있는 기능을 넣을 예정입니다. 
+0.0.5x 에서의 변수와 함수의 이름, 변수의 타입 일부를 변경하였습니다.
 
-1. 데이터 분석을 할 때 형태소 분석을 한 뒤 (1) 단어를 치환하거나, (2) 원하지 않는 단어들을 필터링 할 일들이 있습니다. 이를 위하여 **Postprocessing** 을 쉽게 할 수 있는 기능을 제공할 예정입니다. 
+| 변경 전 | 변경 후 | 메모 |
+| --- | --- | --- |
+| ckonlpy.tag.Twitter._loaded_twitter_default_dictionary | ckonlpy.tag.Twitter.use_twitter_dictionary | konlpy.tag.Twitter 의 사전 사용 유무 |
+| ckonlpy.tag.Twitter._dictionary | ckonlpy.tag.Twitter.dictionary | public 으로 변환하였습니다 |
+| ckonlpy.tag.Twitter._customized_tagger | ckonlpy.tag.Twitter.template_tagger | Template 기반으로 작동하는 tagger 임을 명시하고, public 으로 변환하였습니다 |
+| ckonlpy.tag.Postprocessor.tag | ckonlpy.tag.Postprocessor.pos | 기본 tagger 의 결과를 후처리하는 기능이기 때문에 동일한 함수명으로 통일하였습니다 |
+| ckonlpy.custom_tag.SimpleSelector | ckonlpy.custom_tag.SimpleEvalator | 클래스 이름을 Selector 에서 Evaluator 로 변경하였습니다 |
+| ckonlpy.custom_tag.SimpleSelector.score | ckonlpy.custom_tag.SimpleEvalator.evaluate | 품사열 후보의 점수 계산 부분을 score --> evaluate 로 함수명을 변경하였습니다 |
+| ckonlpy.tag.Twitter.set_selector | ckonlpy.tag.AbstractTagger.set_evaluator | 품사열 후보의 점수 계산 함수를 설정하는 함수의 이름을 변경하였습니다. 해당 함수는 ckonlpy.tag.Twitter 에서 ckonlpy.tag.AbstractTagger 로 이동하였습니다 |
+| ckonlpy.custom_tag.SimpleSelector.weight | ckonlpy.custom_tag.SimpleEvaluator.weight | {str:float} 형식의 weight 를 [(str, float)] 형식으로 변경하였습니다 |
 
 ## Usage
 
@@ -53,36 +62,38 @@ ckonlpy.tag의 Twitter는 add_dictionary를 통하여 str 혹은 list of str 형
 
 현재 사용중인 탬플릿 기반 토크나이저는 코드 사용 중 탬플릿을 추가할 수 있습니다. 현재 사용중인 탬플릿의 리스트는 아래처럼 확인할 수 있습니다. 
 
-    twitter._customized_tagger.templates
+    twitter.template_tagger.templates
     > [('Noun', 'Josa'), ('Modifier', 'Noun'), ('Modifier', 'Noun', 'Josa')]
 
 탬플릿은 tuple of str 형식으로 입력합니다. 
 
-    twitter._customized_tagger.add_a_template(('Noun', 'Noun', 'Josa'))
+    twitter.template_tagger.add_a_template(('Noun', 'Noun', 'Josa'))
 
 ### Set templates tagger selector
 
 Templates를 이용하여도 후보가 여러 개 나올 수 있습니다. 여러 개 후보 중에서 best 를 선택하는 함수를 직접 디자인 할 수 도 있습니다. 이처럼 몇 개의 점수 기준을 만들고, 각 기준의 weight를 부여하는 방식은 트위터 분석기에서 이용하는 방식인데, 직관적이고 튜닝 가능해서 매우 좋은 방식이라 생각합니다.
 
-    score_weights = {
-        'num_nouns': -0.1,
-        'num_words': -0.2,
-        'no_noun': -1
-    }
+    my_weights = [
+        ('num_nouns', -0.1),
+        ('num_words', -0.2),
+        ('no_noun', -1),
+        ('len_sum_of_nouns', 0.2)
+    ]
 
-    def my_score(candidate):
-        num_nouns = len([w for w,t in candidate if t == 'Noun'])
+    def my_evaluate_function(candidate):
+        num_nouns = len([word for word, pos, begin, e in candidate if pos == 'Noun'])
         num_words = len(candidate)
-        no_noun = 1 if num_nouns == 0 else 0
+        has_no_nouns = (num_nouns == 0)
+        len_sum_of_nouns = 0 if has_no_nouns else sum(
+            (len(word) for word, pos, _, _ in candidate if pos == 'Noun'))
 
-        score = (num_nouns * score_weights['num_nouns'] 
-                 + num_words * score_weights['num_words']
-                 + no_noun * score_weights['no_noun'])
+        scores = (num_nouns, num_words, has_no_nouns, len_sum_of_nouns)
+        score = sum((score * weight for score, (_, weight) in zip(scores, my_weights)))
         return score
 
-위의 예제처럼 score_weights와 my_score 함수를 정의하여 twitter.set_selector()에 입력하면, 해당 함수 기준으로 best candidate를 선택합니다. 
+위의 예제처럼 my_weights 와 my_evaluate_function 함수를 정의하여 twitter.set_evaluator()에 입력하면, 해당 함수 기준으로 best candidate를 선택합니다.
 
-    twitter.set_selector(score_weights, my_score)
+    twitter.set_evaluator(my_weights, my_evaluate_function)
 
 ### Postprocessor
 
@@ -94,29 +105,36 @@ passwords 에 등록된 단어, (단어, 품사)만 출력됩니다.
     
     passwords = {'아이오아이', ('정말', 'Noun')}
     postprocessor = Postprocessor(twitter, passwords = passwords)
-    postprocessor.tag('우리아이오아이는 정말 이뻐요')
+    postprocessor.pos('우리아이오아이는 정말 이뻐요')
     # [('아이오아이', 'Noun'), ('정말', 'Noun')]
 
 stopwords 에 등록된 단어, (단어, 품사)는 출력되지 않습니다. 
 
     stopwords = {'는'}
     postprocessor = Postprocessor(twitter, stopwords = stopwords)
-    postprocessor.tag('우리아이오아이는 정말 이뻐요')
+    postprocessor.pos('우리아이오아이는 정말 이뻐요')
     # [('우리', 'Modifier'), ('아이오아이', 'Noun'), ('정말', 'Noun'), ('이뻐', 'Adjective'), ('요', 'Eomi')]
 
 특정 품사를 지정하면, 해당 품사만 출력됩니다. 
 
     passtags = {'Noun'}
     postprocessor = Postprocessor(twitter, passtags = passtags)
-    postprocessor.tag('우리아이오아이는 정말 이뻐요')
+    postprocessor.pos('우리아이오아이는 정말 이뻐요')
     # [('아이오아이', 'Noun'), ('정말', 'Noun')]
 
 치환할 단어, (단어, 품사)를 dict 형식으로 정의하면 tag 에서 단어가 치환되어 출력됩니다.
 
     replace = {'아이오아이': '아이돌', ('이뻐', 'Adjective'): '예쁘다'}
     postprocessor = Postprocessor(twitter, replace = replace)
-    postprocessor.tag('우리아이오아이는 정말 이뻐요')
-    [('우리', 'Modifier'), ('아이돌', 'Noun'), ('는', 'Josa'), ('정말', 'Noun'), ('예쁘다', 'Adjective'), ('요', 'Eomi')]
+    postprocessor.pos('우리아이오아이는 정말 이뻐요')
+    # [('우리', 'Modifier'), ('아이돌', 'Noun'), ('는', 'Josa'), ('정말', 'Noun'), ('예쁘다', 'Adjective'), ('요', 'Eomi')]
+
+연속된 단어를 하나의 단어루 묶기 위해서 nested tuple 이나 tuple of str 형식의 ngram 을 입력할 수 있습니다. tuple of str 의 형식으로 입력된 ngram 은 Noun 으로 인식됩니다.
+
+    ngrams = [(('미스', '함무라비'), 'Noun'), ('바람', '의', '나라')]
+    postprocessor = Postprocessor(twitter, ngrams = ngrams)
+    postprocessor.pos('미스 함무라비는 재밌는 드라마입니다')
+    # [('미스 - 함무라비', 'Noun'), ('는', 'Josa'), ('재밌는', 'Adjective'), ('드라마', 'Noun'), ('입니', 'Adjective'), ('다', 'Eomi')]
 
 ### Loading wordset
 
@@ -154,6 +172,23 @@ load_replace_wordpair 을 이용하는 예시코드 입니다.
 
     replace = load_replace_wordpair('./replacewords.txt')
     print(replace) # {'아빠': '아버지', ('엄마', 'Noun'): '어머니'}
+
+ngram 단어들의 각 단어는 한 칸 띄어쓰기로, ngram 의 품사는 tap 으로 구분되어 있습니다.
+
+    str str
+    str str\tstr
+
+아래는 ngrams.txt 의 예시입니다.
+
+    바람 의 나라
+    미스 함무라비	Noun
+
+load_ngram 을 이용하는 예시코드 입니다.
+
+    from ckonlpy.utils import load_ngram
+
+    ngrams = load_ngram('./ngrams.txt')
+    print(ngrams) # [('바람', '의', '나라'), (('미스', '함무라비'), 'Noun')]
 
 ## Install
 
