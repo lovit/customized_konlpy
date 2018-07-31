@@ -15,7 +15,9 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url='https://github.com/lovit/customized_konlpy',
     packages=setuptools.find_packages(),
-    package_data={'ckonlpy':['data/*/*.txt', 'data/*/*/*.txt']},
+    package_data={
+        'ckonlpy':['data/*/*.txt', 'data/*/*/*.txt', 'data/templates/*']
+    },
     install_requires=["Jpype1>=0.6.1", "konlpy>=0.4.4"],
     classifiers=(
         "Programming Language :: Python :: 3.6",
