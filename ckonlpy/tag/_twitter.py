@@ -10,12 +10,11 @@ from ckonlpy.utils import load_dictionary
 class Twitter(AbstractTagger):
 
     def __init__(self, dictionary=None, templates=None, use_twitter_dictionary=True):
-        super().__init__(dictionary, templates)
+        super().__init__(dictionary, templates, tagset)
         self._base = KoNLPyTwitter()
         self.use_twitter_dictionary = use_twitter_dictionary
         if use_twitter_dictionary:
             self._load_default_dictionary()
-        self.tagset = tagset
         self.template_tagger = SimpleTemplateTagger(self.dictionary, templates)
 
     def _load_default_dictionary(self):

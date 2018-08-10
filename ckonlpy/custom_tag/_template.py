@@ -1,18 +1,20 @@
 from ckonlpy.utils import installpath
 from ckonlpy.utils import loadtxt
-from ckonlpy.data.tagset import twitter as tagset
 from ._evaluator import SimpleEvaluator
 from pprint import pprint
 
 class SimpleTemplateTagger:
 
-    def __init__(self, dictionary, templates=None, evaluator=None):
+    def __init__(self, dictionary, templates=None, evaluator=None, tagset=None):
 
         if not evaluator:
-            evaluator = SimpleEvaluator()
+            evaluator = SimpleEvaluator(tagset=tagset)
+
+        if not tagset:
+            tagset = {}
 
         self.dictionary = dictionary
-        self.templates = _initialize_templates(templates, dictionary)
+        self.templates = _initialize_templates(templates, dictionary, tagset)
         self.evaluator = evaluator
         self.debug = False
 
@@ -57,7 +59,7 @@ test_candidates = [
     [('이것', 'Noun', 0, 2), ('은', 'Josa', 2, 3), ('테스트', 'Noun', 3, 6)]
 ]
 
-def _initialize_templates(templates, dictionary):
+def _initialize_templates(templates, dictionary, tagset):
     if not templates:
         templatespath = '%s/data/templates/twitter_templates0' % installpath
         templates = loadtxt(templatespath)

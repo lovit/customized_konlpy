@@ -3,9 +3,10 @@ from ckonlpy.dictionary import CustomizedDictionary
 
 class AbstractTagger:
 
-    def __init__(self, dictionary=None, templates=None):
+    def __init__(self, dictionary, templates, tagset):
         self.dictionary = dictionary if dictionary else CustomizedDictionary()
-        self.template_tagger = SimpleTemplateTagger(self.dictionary, templates)
+        self.template_tagger = SimpleTemplateTagger(self.dictionary, templates, tagset)
+        self.tagset = tagset
 
     def pos(self, phrase, norm=False, stem=False, perfect_match=False):
 
