@@ -45,6 +45,8 @@ class AbstractTagger:
     def add_dictionary(self, words, tag, force=False):
         if (not force) and (not (tag in self.tagset)):
             raise ValueError('%s is not available tag' % tag)
+        if (force) and (not (tag in self.tagset)):
+            self.template_tagger.add_a_template((tag,))
         self.dictionary.add_dictionary(words, tag)
 
     def load_dictionary(self, fname_list, tag):
