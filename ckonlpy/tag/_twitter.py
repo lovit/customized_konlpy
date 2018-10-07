@@ -1,5 +1,5 @@
 from ._abstract import AbstractTagger
-from konlpy.tag import Twitter as KoNLPyTwitter
+from konlpy.tag import Okt as KoNLPyTwitter
 from ckonlpy.custom_tag import SimpleTemplateTagger
 from ckonlpy.data.tagset import twitter as tagset
 from ckonlpy.dictionary import CustomizedDictionary
