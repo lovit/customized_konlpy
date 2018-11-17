@@ -64,7 +64,7 @@ class Postprocessor:
 
         return words_
 
-    def pos(self, phrase):
+    def pos(self, phrase, **pos_options):
         def to_replace(w):
             if w in self.replace:
                 w_ = self.replace[w]
@@ -74,7 +74,7 @@ class Postprocessor:
                 return w
             return (w_, w[1]) if isinstance(w_, str) else w_
 
-        words = self.base_tagger.pos(phrase)
+        words = self.base_tagger.pos(phrase, **pos_options)
 
         if self.ngrams:
             words = self._as_ngram(words)
